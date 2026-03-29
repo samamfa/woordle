@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { WORD_LENGTH } from "./constants";
 import { TARGET_WORD, VALID_WORDS } from "./words";
 
-function checkGuess(guess: string, target: string): string[] {
+type LetterResult = "correct" | "present" | "absent";
+
+export function checkGuess(guess: string, target: string): LetterResult[] {
   // two pass solution
   const s = new Set<number>();
   const res = Array(5).fill("");
@@ -34,7 +37,7 @@ function checkGuess(guess: string, target: string): string[] {
   return res;
 }
 
-function isValidGuess(guess: string): boolean {
+export function isValidGuess(guess: string): boolean {
   const idx = VALID_WORDS.indexOf(guess);
   return idx !== -1 && guess.length === WORD_LENGTH;
 }
