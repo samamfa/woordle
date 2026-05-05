@@ -1,6 +1,9 @@
-export const TARGET_WORD = "CRANE";
+export const TARGET_WORD = "BRAVE";
 export const VALID_WORDS = [
+  "BREAD",
+  "ADIEU",
   "CRANE",
+  "CLASH",
   "SLATE",
   "PLANT",
   "GRAPE",
@@ -28,9 +31,12 @@ export const VALID_WORDS = [
   "GRACE",
   "BLAST",
   "STICK",
+  "SPEED",
   "GRAIL",
   "PRIZE",
   "TRIAL",
   "FLAME",
   "CLINK",
+  "EARTH",
+  "EAGLE",
 ];

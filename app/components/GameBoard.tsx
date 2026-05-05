@@ -2,52 +2,77 @@
 "use client";
 import { useState, useEffect } from "react";
 import { MAX_ATTEMPTS, WORD_LENGTH } from "../lib/constants";
-import { checkGuess, isValidGuess } from "../lib/gameLogic";
+import { checkGuess, isValidGuess, getLetterStatuses } from "../lib/gameLogic";
 import { TARGET_WORD } from "../lib/words";
-// import
+import { Grid } from "./Grid";
+import { Keyboard } from "./Keyboard";
+import { useCallback } from "react";
+import { LetterResult } from "../lib/types";
 
-function GameBoard() {
-  const [guess, setGuess] = useState<string[]>([]);
+export function GameBoard() {
+  const [guesses, setGuesses] = useState<string[]>([]);
   const [currentGuess, setCurrentGuess] = useState<string>("");
   const [gameStatus, setGameStatus] = useState<"playing" | "won" | "lost">(
     "playing",
   );
-  const [usedLetters, setUsedLetters] = useState<Set<string>>(new Set());
 
-  function handleKey(key: string): void {
-    if (/^[a-zA-Z]$/.test(key) && currentGuess.length < 5)
-      setCurrentGuess((curr) => curr + key.toUpperCase());
-    else if (key === "backspace") setCurrentGuess((curr) => curr.slice(0, -1));
-    else if (key === "enter" && currentGuess.length === WORD_LENGTH) {
-      if (isValidGuess(currentGuess)) {
-        const letterRes = checkGuess(currentGuess, TARGET_WORD);
+  const guessResults: LetterResult[][] = guesses.map((guess) =>
+    checkGuess(guess, TARGET_WORD),
+  );
 
-        setGuess((g) => [...g, currentGuess]);
-        setUsedLetters((prevSet) => new Set([...prevSet, ...currentGuess]));
+  const letterStatuses = getLetterStatuses(guessResults, guesses);
 
-        if (letterRes.every((l) => l === "correct")) setGameStatus("won");
-        else if (guess.length === MAX_ATTEMPTS) {
-          setGameStatus("lost");
+  const handleKey = useCallback(
+    (key: string) => {
+      if (/^[a-zA-Z]$/.test(key) && currentGuess.length < 5)
+        setCurrentGuess((curr) => curr + key.toUpperCase());
+      else if (key === "backspace")
+        setCurrentGuess((curr) => curr.slice(0, -1));
+      else if (key === "enter") {
+        if (isValidGuess(currentGuess)) {
+          const letterRes = checkGuess(currentGuess, TARGET_WORD);
+
+          setGuesses((g) => [...g, currentGuess]);
           setCurrentGuess("");
+
+          if (letterRes.every((l) => l === "correct")) setGameStatus("won");
+          else if (guesses.length + 1 === MAX_ATTEMPTS) setGameStatus("lost");
         }
       }
-    }
-  }
+    },
+    [currentGuess, guesses.length],
+  );
 
   function handleReset(): void {
     setCurrentGuess("");
-    setGuess([]);
+    setGuesses([]);
     setGameStatus("playing");
-    setUsedLetters(new Set());
-  }
-
-  function handleKeyDown(event: KeyboardEvent): void {
-    const key = event.key.toLowerCase();
-    handleKey(key);
   }
 
   useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent): void {
+      const key = event.key.toLowerCase();
+      handleKey(key);
+    }
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKey]);
+
+  return (
+    <div className="flex flex-col items-center">
+      <Grid
+        guesses={guesses}
+        guessResults={guessResults}
+        currentGuess={currentGuess}
+      />
+      <Keyboard onKey={handleKey} letterStatuses={letterStatuses} />
+      {gameStatus === "won" && ( // conditionally rendered
+        <p>You won!</p>
+      )}
+      {gameStatus === "lost" && <p>The word was {TARGET_WORD}</p>}
+      {gameStatus !== "playing" && (
+        <button onClick={handleReset}>Play Again</button>
+      )}
+    </div>
+  );
 }

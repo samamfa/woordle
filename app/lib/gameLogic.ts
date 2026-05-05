@@ -1,43 +1,67 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { WORD_LENGTH } from "./constants";
 import { TARGET_WORD, VALID_WORDS } from "./words";
-
-type LetterResult = "correct" | "present" | "absent";
+import { LetterResult } from "../lib/types";
 
 export function checkGuess(guess: string, target: string): LetterResult[] {
-  // two pass solution
-  const s = new Set<number>();
-  const res = Array(5).fill("");
+  // Two pass solution
+  const WORD_LENGTH = 5;
+  const result: LetterResult[] = Array(WORD_LENGTH).fill("absent");
 
-  // first loop: check all letters in correct position
-  for (let i: number = 0; i < 5; i++) {
-    if (target[i] === guess[i]) {
-      res[i] = "correct";
-      s.add(i);
+  // Track remaining available letters in target
+  const availableLetters: Map<string, number> = new Map();
+  for (const letter of target) {
+    availableLetters.set(letter, (availableLetters.get(letter) || 0) + 1);
+  }
+
+  // First pass: Mark correct positions
+  for (let i = 0; i < WORD_LENGTH; i++) {
+    if (guess[i] === target[i]) {
+      result[i] = "correct";
+      availableLetters.set(guess[i], availableLetters.get(guess[i])! - 1);
     }
   }
 
-  // second loop: find letters in the wrong position
-  for (let i: number = 0; i < 5; i++) {
-    if (res[i]) continue;
+  // Second pass: Mark present letters
+  for (let i = 0; i < WORD_LENGTH; i++) {
+    if (result[i] === "correct") continue;
 
-    const ch = guess[i];
-    let idx = -1;
-    for (let j: number = 0; j < 5; j++) {
-      if (!s.has(j) && target[j] === ch) {
-        idx = j;
-        break;
+    const letter = guess[i];
+    const remaining = availableLetters.get(letter) || 0;
+
+    if (remaining > 0) {
+      result[i] = "present";
+      availableLetters.set(letter, remaining - 1);
+    }
+  }
+
+  return result;
+}
+
+export function getLetterStatuses(
+  guessResults: LetterResult[][],
+  guesses: string[],
+): Map<string, LetterResult> {
+  const map = new Map<string, LetterResult>();
+  for (const [i, guess] of guesses.entries()) {
+    const result = guessResults[i];
+    for (const [j, letter] of guess.split("").entries()) {
+      const status = result[j];
+      const current = map.get(letter);
+
+      // Only upgrade, never downgrade
+      if (
+        !current ||
+        status === "correct" ||
+        (status === "present" && current !== "correct")
+      ) {
+        map.set(letter, status);
       }
     }
-
-    if (idx !== -1) res[idx] = "present";
-    else res[idx] = "absent";
   }
-
-  return res;
+  return map;
 }
 
 export function isValidGuess(guess: string): boolean {
-  const idx = VALID_WORDS.indexOf(guess);
-  return idx !== -1 && guess.length === WORD_LENGTH;
+  return guess.length === WORD_LENGTH && VALID_WORDS.includes(guess);
 }

@@ -1,44 +1,50 @@
+import { TARGET_WORD } from "../lib/words";
+import { LetterResult, STATUS_STYLES } from "../lib/types";
+import { getLetterStatuses } from "../lib/gameLogic";
 const ROWS = [
   ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
   ["a", "s", "d", "f", "g", "h", "j", "k", "l"],
-  ["Enter", "z", "x", "c", "v", "b", "n", "m", "Backspace"],
+  ["enter", "z", "x", "c", "v", "b", "n", "m", "backspace"],
 ];
 
 interface KeyboardProps {
   onKey: (key: string) => void;
-  usedLetters: Set<string>;
+  letterStatuses: Map<string, LetterResult>;
 }
 
 interface KeyProps {
   value: string;
-  used: boolean;
+  result: LetterResult;
   wide: boolean;
   onKey: (key: string) => void;
 }
 
-function Key({ value, used, wide, onKey }: KeyProps) {
+function Key({ value, result, wide, onKey }: KeyProps) {
   return (
     <button
-      className={`uppercase ${wide ? "w-14" : "w-8"} ${used ? "bg-gray-600 text-white" : "bg-white text-black"}`}
+      onClick={() => onKey(value.toLowerCase())}
+      className={`uppercase ${wide ? "w-14" : "w-8"} ${STATUS_STYLES[result]}`}
     >
       {value}
     </button>
   );
 }
 
-function Keyboard({ onKey, usedLetters }: KeyboardProps) {
+export function Keyboard({ onKey, letterStatuses }: KeyboardProps) {
   return (
-    <div className="p1">
+    <div className="p-1">
       {ROWS.map((row, rowIdx) => (
         <div key={rowIdx} className="flex justify-center mb-1">
           {row.map((letter, letterIdx) => {
-            const isWide = letter === "Enter" || letter === "Backspace";
-            const isUsed = usedLetters.has(letter) && !isWide;
+            const isWide = letter === "enter" || letter === "backspace";
+            const isUsed: LetterResult =
+              letterStatuses.get(letter.toUpperCase()) || "unused";
+
             return (
               <Key
                 key={letterIdx}
                 value={letter}
-                used={isUsed}
+                result={isUsed}
                 wide={isWide}
                 onKey={onKey}
               />
