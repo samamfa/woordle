@@ -1,6 +1,5 @@
-import { TARGET_WORD } from "../lib/words";
 import { LetterResult, STATUS_STYLES } from "../lib/types";
-import { getLetterStatuses } from "../lib/gameLogic";
+
 const ROWS = [
   ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
   ["a", "s", "d", "f", "g", "h", "j", "k", "l"],

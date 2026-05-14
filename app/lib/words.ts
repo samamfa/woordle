@@ -39,4 +39,6 @@ export const VALID_WORDS = [
   "CLINK",
   "EARTH",
   "EAGLE",
+  "TEACH",
+  "BEACH",
 ];
