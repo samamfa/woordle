@@ -1,5 +1,5 @@
-import { checkGuess } from "../lib/gameLogic";
-import { LetterResult, STATUS_STYLES } from "../lib/types";
+import { checkGuess } from "../../lib/gameLogic";
+import { LetterResult, STATUS_STYLES } from "../../lib/types";
 
 interface TileProps {
   letter: string;

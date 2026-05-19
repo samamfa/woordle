@@ -16,11 +16,11 @@ model Guess{
   gameId String
   game Game @relation(fields: [gameId], references: [id])
   word String
-  createdAt DateTime
+  createdAt DateTime @default(now())
 }
 model Game {
   id String @id @default(cuid())
   word String
-  createdAt DateTime
+  createdAt DateTime @default(now())
   guesses Guess[]
 }

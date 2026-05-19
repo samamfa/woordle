@@ -1,13 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { useState, useEffect } from "react";
-import { MAX_ATTEMPTS, WORD_LENGTH } from "../lib/constants";
-import { checkGuess, isValidGuess, getLetterStatuses } from "../lib/gameLogic";
-import { TARGET_WORD } from "../lib/words";
+import { MAX_ATTEMPTS, WORD_LENGTH } from "../../lib/constants";
+import {
+  checkGuess,
+  isValidGuess,
+  getLetterStatuses,
+} from "../../lib/gameLogic";
+import { TARGET_WORD } from "../../lib/words";
 import { Grid } from "./Grid";
 import { Keyboard } from "./Keyboard";
 import { useCallback } from "react";
-import { LetterResult } from "../lib/types";
+import { LetterResult } from "../../lib/types";
 
 export function GameBoard() {
   const [guesses, setGuesses] = useState<string[]>([]);

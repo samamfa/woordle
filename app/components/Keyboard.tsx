@@ -1,4 +1,4 @@
-import { LetterResult, STATUS_STYLES } from "../lib/types";
+import { LetterResult, STATUS_STYLES } from "../../lib/types";
 
 const ROWS = [
   ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { WORD_LENGTH } from "./constants";
 import { TARGET_WORD, VALID_WORDS } from "./words";
-import { LetterResult } from "../lib/types";
+import { LetterResult } from "./types";
 
 export function checkGuess(guess: string, target: string): LetterResult[] {
   // Two pass solution
