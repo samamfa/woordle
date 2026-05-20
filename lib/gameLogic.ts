@@ -3,6 +3,7 @@ import { WORD_LENGTH } from "./constants";
 import { TARGET_WORD, VALID_WORDS } from "./words";
 import { LetterResult } from "./types";
 
+// compare guess to target and return array of letter results
 export function checkGuess(guess: string, target: string): LetterResult[] {
   // Two pass solution
   const WORD_LENGTH = 5;
@@ -38,6 +39,7 @@ export function checkGuess(guess: string, target: string): LetterResult[] {
   return result;
 }
 
+// check guess results and return map of letter to best status for keyboard coloring
 export function getLetterStatuses(
   guessResults: LetterResult[][],
   guesses: string[],
@@ -62,6 +64,11 @@ export function getLetterStatuses(
   return map;
 }
 
-export function isValidGuess(guess: string): boolean {
-  return guess.length === WORD_LENGTH && VALID_WORDS.includes(guess);
+// validate guess is 5 letters, in word list, and we have attempts left
+export function isValidGuess(guess: string, numGuesses: number): boolean {
+  return (
+    numGuesses <= 6 &&
+    guess.length === WORD_LENGTH &&
+    VALID_WORDS.includes(guess)
+  );
 }

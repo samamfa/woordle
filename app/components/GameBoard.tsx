@@ -33,7 +33,7 @@ export function GameBoard() {
       else if (key === "backspace")
         setCurrentGuess((curr) => curr.slice(0, -1));
       else if (key === "enter") {
-        if (isValidGuess(currentGuess)) {
+        if (isValidGuess(currentGuess, guesses.length)) {
           const letterRes = checkGuess(currentGuess, TARGET_WORD);
 
           setGuesses((g) => [...g, currentGuess]);
