@@ -2,18 +2,28 @@
 "use client";
 import { useState, useEffect } from "react";
 import { MAX_ATTEMPTS, WORD_LENGTH } from "../../lib/constants";
-import {
-  checkGuess,
-  isValidGuess,
-  getLetterStatuses,
-} from "../../lib/gameLogic";
 import { TARGET_WORD } from "../../lib/words";
 import { Grid } from "./Grid";
 import { Keyboard } from "./Keyboard";
 import { useCallback } from "react";
 import { LetterResult } from "../../lib/types";
+import {
+  checkGuess,
+  isValidGuess,
+  getLetterStatuses,
+} from "../../lib/gameLogic";
 
-export function GameBoard() {
+interface GameBoardProps {
+  gameId: string;
+  targetWord: string;
+  initialGuesses: string[];
+}
+
+export function GameBoard({
+  gameId,
+  targetWord,
+  initialGuesses,
+}: GameBoardProps) {
   const [guesses, setGuesses] = useState<string[]>([]);
   const [currentGuess, setCurrentGuess] = useState<string>("");
   const [gameStatus, setGameStatus] = useState<"playing" | "won" | "lost">(

@@ -1,14 +1,15 @@
-import prisma from "@/lib/prisma";
+import { getGameById } from "@/lib/db/games";
 
-// fetches game and all associated guesses
+// fetch game and all associated guesses
 export async function GET(
   request: Request,
   { params }: { params: { id: string } },
 ): Promise<Response> {
   const { id: gameId } = await params;
-  const game = await prisma.game.findUnique({
-    where: { id: gameId },
-    include: { guesses: true },
+  const game = await getGameById(gameId, {
+    word: false,
+    createdAt: true,
+    guesses: true,
   });
   return Response.json({ game: game });
 }
